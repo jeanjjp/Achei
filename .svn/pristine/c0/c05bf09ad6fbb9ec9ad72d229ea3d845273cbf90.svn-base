@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile">
+
+
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport"
+		content="width=device-width, initial-scale=1, maximum-scale=1.0" />
+	<title>Achei</title>
+
+	<!-- CSS  -->
+	<link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico" />
+	<link href="css/style.css" rel="stylesheet" media="screen" />
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+		rel="stylesheet" />
+	<link type="text/css" rel="stylesheet" href="css/materialize.min.css"
+		media="screen,projection" />
+
+
+<link rel="shortcut icon" type="image/x-icon" href="../img/favicon.ico" />
+	<link href="../css/style.css" rel="stylesheet" media="screen" />
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+		rel="stylesheet" />
+	<link type="text/css" rel="stylesheet" href="../css/materialize.min.css"
+		media="screen,projection" />
+</h:head>
+
+<h:body>
+	<!--  MENU -->
+	<header>
+		<div class="navbar-fixed">
+		<nav class="grey darken-1" role="navigation">
+			<div class="nav-wrapper container">
+				<a id="logo-container" href="index.xhtml" class="brand-logo">Achei <i class="material-icons red-text" style="font-size:50px; margin-right:-10px;">location_on</i></a>
+				<ul class="right hide-on-med-and-down">
+					<li><a href="#{request.contextPath}/index.xhtml">Início</a></li>
+					<li><a class="modal-trigger" href="#modal1">Cadastre-se</a></li>
+					<li><a href="#{request.contextPath}/Sobre.xhtml">Como funciona</a></li>
+					<li><a href="#{request.contextPath}/security/Perfil.xhtml">Entrar</a></li>
+				</ul>
+
+				<ul id="nav-mobile" class="side-nav">
+					<li><a href="#{request.contextPath}/index.xhtml">Início</a></li>
+					<li><a class="modal-trigger" href="#modal1">Cadastre-se</a></li>
+					<li><a href="#{request.contextPath}/Sobre.xhtml">Como funciona</a></li>
+					<li><a href="#{request.contextPath}/security/Perfil.xhtml">Entrar</a></li>
+				</ul>
+				<a href="#" data-activates="nav-mobile" class="button-collapse"><i
+					class="material-icons">menu</i></a>
+			</div>
+		</nav>
+		</div>
+	</header>
+	<!--  /MENU -->
+
+
+	<!-- Modal1 Structure -->
+	<div id="modal1" class="modal">
+		<div class="modal-content">
+			<h4 class="light center">Cadastre-se</h4>
+			<div class="row">
+				<h:form class="col s12">
+					<div class="row">
+						<div class="input-field col s12">
+							<i class="material-icons prefix">account_circle</i> 
+							<h:inputText id="icon_email" validatorMessage="Digite um e-mail válido" requiredMessage="Digite um e-mail váildo" required="true" value="#{controladorCliente.emailCliente}" >
+								<f:validateLength minimum="8"></f:validateLength>
+							</h:inputText>
+							<label for="icon_email" data-error="Digite um e-mail válido." data-success="OK.">Email</label>
+						</div>
+						
+						<div class="input-field col s12">
+							<i class="material-icons prefix">edit</i> 
+							<h:inputSecret id="icon_senha" validatorMessage="Digite uma senha válida de no mínimo 8 caracteres" requiredMessage="Digite uma senha válida" required="true" value="#{controladorCliente.senhaCliente}" >
+								<f:validateLength minimum="8" maximum="10"></f:validateLength>
+							</h:inputSecret>
+							<label for="icon_senha" data-error="Digite uma senha entre 8 e 10 caracteres." data-success="OK.">Senha</label>
+						</div>
+					</div>
+					<p:growl id="growl" showDetail="false" sticky="false" life="3500" />  
+					<h:commandButton id="botao" type="submit" class="btn modal-trigger red darken-1 col s12" value="Cadastrar" action="#{controladorCliente.cadastrarCliente()}"></h:commandButton>
+				</h:form>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<div class="row">
+				<div class="col s12">
+					<a class="col s6 center-align" href="#{request.contextPath}/Entrar.xhtml">Já sou cadastrado</a>
+					<a class="col s6 center-align" href="#{request.contextPath}/EsqueceuSenha.xhtml">Esqueceu sua senha?</a>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+
+
+	<!--  CONTEUDO -->
+	<ui:insert name="conteudo">
+
+	</ui:insert>
+	<!--  /CONTEUDO -->
+
+	<!--  FOOTER -->
+	<footer class="footer white lighten-2 z-depth-2">
+		<div class="container">
+			<h6 class="text-lighten-4">
+				© 2017 - Achei <a class="text-lighten-2 right"
+					href="#!">Mais Links</a>
+			</h6>
+		</div>
+	</footer>
+	<!--  /FOOTER -->
+
+	<!--  SCRIPTS-->
+	<script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript" src="js/materialize.min.js"></script>
+	<script type="text/javascript" src="js/init.js"></script>
+	<script>
+		$(document).ready(function() {
+			// the "href" attribute of the modal trigger must specify the modal ID that wants to be triggered
+			$('.modal').modal();
+		});
+	</script>
+	
+	<script type="text/javascript" src="../js/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript" src="../js/materialize.min.js"></script>
+	<script type="text/javascript" src="../js/init.js"></script>
+	
+	<!--  /SCRIPTS -->
+
+</h:body>
+</html>

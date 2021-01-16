@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:x="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile">
+
+<ui:composition template="Menu.xhtml">
+
+	<ui:define name="conteudo">
+
+		<div class="container">
+			<br /> <br />
+			<div class="row">
+				<div class="col m12 s12 center">
+					<h1 class="light">Achei!</h1>
+					<h3 class="light grey-text text-darken-1">Uma nova forma de
+						encontrar seus objetos perdidos.</h3>
+				</div>
+
+				<div class="col s12 m8 center offset-m2">
+					<br />
+					<p class="light texto-sobre black-text">Achar ou perder um objeto é algo muito comum no dia a dia de muita gente.
+					Com a rotina agitada, objetos como malas de viagem, celulares, documentos, chaves do carro ou carteiras
+					são exemplos de itens que podem ser perdidos facilmente e que normalmente não carregam consigo contatos ou informaçãos sobre 
+					o proprietário, fazendo com que umas das dificuldades de quem acha algum objeto seja saber o que fazer com o objeto e
+					normalmente Levando quem o encontrou a desistir de efetuar a devolução do mesmo. Nós queremos mudar isso.</p>
+				</div>
+
+			</div>
+		</div>
+
+		<div id="index-banner" class="parallax-container">
+			<div class="section no-pad-bot">
+				<div class="container"></div>
+			</div>
+			<div class="parallax">
+				<img src="img/parallax/background1.jpg"
+					alt="Unsplashed background img 1" />
+			</div>
+		</div>
+
+
+
+
+		<div class="container">
+			<br /> <br />
+			<div class="row">
+				<div class="col m12 s12 center">
+					<h1 class="light">Prevenir,</h1>
+					<h3 class="light grey-text text-darken-1">É sempre melhor do
+						que remediar.</h3>
+				</div>
+
+				<div class="col s12 m8 center offset-m2">
+					<br />
+					<p class="light texto-sobre black-text">Nossa função é fazer com que seus objetos possam carregar todas as informações necessárias
+					consigo mesmo, como contatos e endereços, fazendo com que os mesmos possam ser devolvidos facilmente, além de fornecer a localização
+					geográfica de onde o seu objeto foi encontrado e uma forma de comunicação entre você e a pessoa que localizou seu item.
+					Siga o passo a passo abaixo.</p>
+				</div>
+
+			</div>
+		</div>
+
+
+
+		<div class="container">
+			<div class="section">
+
+				<!--   Icon Section   -->
+				<div class="row">
+					<div class="col s12 m6">
+					<br/><br/><br/><br/><br/><br/><br/>
+							<h5 class="center">Cadastre-se.</h5>
+							<p class="light valign-wrapper center">1 - Faça o cadastro em nosso site, é rápido e fácil, só precisa de um e-mail e uma senha.<br/>
+							2 - Edite seu perfil, deixe-o mais completo posível, estes dados irão ajudar quando seu item for achado.<br/>
+							3 - Clique em adquirir um código, você pode adquirir até 3 códigos gratuitamente. </p>
+
+					</div>
+
+					<div class="col s12 m6">
+						<img class="responsive-img" src="img/parallax/tuto2.png" />
+					</div>
+					
+					<div class="col s12 m6 hide-on-med-and-down">
+						<img class="responsive-img" src="img/parallax/tuto2.png" />
+					</div>
+
+					<div class="col s12 m6">
+							<br/><br/><br/><br/><br/><br/><br/>
+							<h5 class="center">Cadastre seu objeto.</h5>
+
+							<p class="light center">4 - Cadastre os dados do seu objeto junto ao código gerado.<br/>
+							5 - Utilize a etiqueta virtual para deixar seu código sempre junto do objeto<br/>
+							6 - Pronto, quando seu código for encontrado, você será notificado e pessoa poderá lhe devolver seu objeto facilmente.</p>
+					</div>
+					
+					<div class="col s12 m6 hide-on-large-only">
+						<img class="responsive-img" src="img/parallax/tuto2.png" />
+					</div>
+
+					
+				</div>
+
+			</div>
+		</div>
+
+
+		<div class="parallax-container ">
+			<div class="section no-pad-bot">
+				<div class="container">
+					<div class="row center"></div>
+				</div>
+			</div>
+			<div class="parallax">
+				<img src="img/parallax/background2.jpg"
+					alt="Unsplashed background img 2" />
+			</div>
+		</div>
+		
+		<div class="container">
+		<div class="row">
+			<div class="col m12 s12 center">
+					<h1 class="light">Várias opções,</h1>
+					<h3 class="light grey-text text-darken-1">Para vários objetos.</h3>
+				</div>
+
+				<div class="col s12 m8 center offset-m2">
+					<br />
+					<p class="light texto-sobre black-text">O mais importante é manter seu código sempre junto do objeto ao qual o mesmo está associado,
+					neste caso você pode utilizar nossa etiqueta virtual para imprimir e utilizar o código junto ao
+					seu objeto de forma gratuíta ou se preferir você pode adquirir uma das opções acima como chaveiro, cartão, adesivo e outros </p>
+				</div>
+				</div>
+				</div>
+
+
+		<div class="parallax-container valign-wrapper">
+			<div class="section no-pad-bot">
+				<div class="container">
+					<div class="row center"></div>
+					
+					contato
+					
+				</div>
+			</div>
+			<div class="parallax">
+				<img src="img/parallax/background3.jpg"
+					alt="Unsplashed background img 3" />
+			</div>
+		</div>
+
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

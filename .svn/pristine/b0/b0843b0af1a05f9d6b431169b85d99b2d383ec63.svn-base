@@ -1,0 +1,202 @@
+package controller;
+
+import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+
+import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.mail.EmailException;
+import org.primefaces.context.RequestContext;
+
+import dao.ClienteDAO;
+import dao.CodigoDAO;
+import dao.ContatoDAO;
+import dao.EnderecoDAO;
+import model.Cliente;
+import model.Codigo;
+import model.Contato;
+import model.Endereco;
+import util.EnviaEmail;
+
+@ManagedBean
+public class ControladorCodigo implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	private Codigo codigo;
+	private CodigoDAO codigoDAO;
+	private Cliente cliente;
+	private ClienteDAO clienteDAO;
+	// pega latitude e longitude do usuario
+	private double latitude;
+	private double longitude;
+	// Verifica se cliente ja tem 3 codigos gratis
+	private float precoCodigoGratis;
+	private int qtCodigoParaComprar;
+
+	public String comprarCodigo() {
+		
+		if (pegaClienteNaSessao().getQtCodigoGratis() <3) {
+			this.setPrecoCodigoGratis(0);
+		} else {
+			this.setPrecoCodigoGratis(1);
+		}
+
+		return "AdquirirCodigo.xhml";
+	}
+
+	public String adquirirCodigo() {
+		
+		//verifica se a quantidade desejada é maio que 0
+		if(this.getQtCodigoParaComprar() <= 0){
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Digite uma quantidade",""));
+			return comprarCodigo();
+		}
+		
+		clienteDAO = new ClienteDAO();
+		cliente = clienteDAO.obterCliente(pegaClienteNaSessao().getIdCliente());
+		codigo = new Codigo();
+		codigoDAO = new CodigoDAO();
+		
+		//Se cliente já tiver todo os codigos gratis redireciona para a pagna de pagamento
+		if( cliente.getQtCodigoGratis() >=3){
+			System.out.println("REDIRECIONANDO PAR APAGINA DE PAGAMENTO");
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "REDIRECIONANDO PARA PÁGINA DE PAGAMENTO",""));
+			
+			cliente = null;
+			clienteDAO = null;
+			codigo = null;
+			codigoDAO = null;
+			
+			return comprarCodigo();
+		}
+		
+		//Verifica quantos codis gratis ainda pode ter
+		if(this.getQtCodigoParaComprar() + cliente.getQtCodigoGratis() >3){
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Valor inválido, você pode Adquirir somente mais "+ (3-cliente.getQtCodigoGratis())+" códigos grátis",""));
+			
+			cliente = null;
+			clienteDAO = null;
+			codigo = null;
+			codigoDAO = null;
+			
+			return null;
+		}
+		
+		
+		while(qtCodigoParaComprar > 0){
+			String codigoGerado = codigo.gerarCodigo();
+			codigo.setCodigo(codigoGerado);
+			codigo.setCodigoIdCliente(cliente.getIdCliente());
+			codigoDAO.incluirCodigo(codigo);
+			
+			qtCodigoParaComprar = qtCodigoParaComprar -1;
+			
+			cliente.setQtCodigoGratis(cliente.getQtCodigoGratis() +1);
+			clienteDAO.atualizarCliente(cliente);
+		}
+				
+		FacesContext context = FacesContext.getCurrentInstance();
+		HttpServletRequest request = (HttpServletRequest) 
+				context.getExternalContext().getRequest();
+		
+		HttpSession sessao = request.getSession();
+		sessao.removeAttribute("clientelogado");
+		sessao.setAttribute("clientelogado", this.cliente);
+		
+		cliente = null;
+		clienteDAO = null;
+		codigo = null;
+		codigoDAO = null;
+
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Códigos adquiridos com sucesso.",""));
+		
+		return comprarCodigo();
+		
+	}
+	
+	
+	public String verCodigos(){
+		return "Codigos.xhtml";
+	}
+	
+
+	public String localizar() {
+		 new Thread() {
+				
+			 @Override
+			 public void run() {
+				 String link = "https://www.google.com/maps/place/"+latitude+","+longitude;
+				 EnviaEmail email = new EnviaEmail();
+				 try {
+					 email.enviaEmailLocalizacaoObjeto(link);
+				} catch (MalformedURLException | EmailException e) {
+					e.printStackTrace();
+					System.out.println("Erro ao enviar e-mail "+e);
+				}	
+				 
+			}
+		}.start();
+		return "DadosCodigo.xhtml";
+	}
+	
+	public Cliente pegaClienteNaSessao(){
+		FacesContext context = FacesContext.getCurrentInstance();
+		HttpServletRequest request = (HttpServletRequest) 
+				context.getExternalContext().getRequest();
+		
+		HttpSession sessao = request.getSession();
+		Cliente cliente = (Cliente) sessao.getAttribute("clientelogado");
+		
+		return cliente;
+	}
+
+
+	public double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
+	}
+
+	public double getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(double longitude) {
+		this.longitude = longitude;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public float getPrecoCodigoGratis() {
+		return precoCodigoGratis;
+	}
+
+	public void setPrecoCodigoGratis(float precoCodigoGratis) {
+		this.precoCodigoGratis = precoCodigoGratis;
+	}
+
+	public int getQtCodigoParaComprar() {
+		return qtCodigoParaComprar;
+	}
+
+	public void setQtCodigoParaComprar(int qtCodigoParaComprar) {
+		this.qtCodigoParaComprar = qtCodigoParaComprar;
+	}
+
+}

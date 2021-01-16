@@ -1,0 +1,89 @@
+package util;
+
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import org.apache.commons.mail.EmailException;
+import org.apache.commons.mail.HtmlEmail;
+import org.apache.commons.mail.SimpleEmail;
+
+public class EnviaEmail {
+	
+	
+	
+	
+	
+	public void enviaEmailLocalizacaoObjeto(String link) throws EmailException, MalformedURLException{
+		
+		// Cria o e-mail
+		HtmlEmail email = new HtmlEmail();
+		email.setHostName("smtp-mail.outlook.com");
+		email.setSmtpPort(587);
+		email.addTo("jeanjjp2@gmail.com", "John Doe");
+		email.setCharset("utf-8");
+		email.setFrom("magaiver_10@hotmail.com", "Jean");
+		email.setSubject("Achei - Seu objeto foi achado.");
+		 
+		// adiciona uma imagem ao corpo da mensagem e retorna seu id
+		URL url = new URL("http://2.bp.blogspot.com/-lg1T3y25hYQ/UA1XschP9mI/AAAAAAAAR1g/9tR6jGxmx_U/s1600/Captura-de-tela-2012-07-16-às-12.12.29.png");
+		String cid = email.embed(url, "Logo");
+		//String cid = email.embed(new File("img/foto_perfil.jpg"));
+		 
+		// configura a mensagem para o formato HTML
+		email.setHtmlMsg("<html>Achei! - <img style='width: 200px; heigh:200px;' src=\"cid:"+cid+"\"><br/>"
+				+ "<body><table><tr><td>Seu objeto foi achadado, clique no link abaixo para ver no mapa.</td></tr></table><br/><br/><a href='"+link+"'>Link</a></body>"
+				+ "</html>");
+		 
+		// configure uma mensagem alternativa caso o servidor não suporte HTML
+		email.setTextMsg("Seu servidor de e-mail não suporta mensagem HTML");
+		email.setTLS(true);
+		email.setAuthentication("magaiver_10@hotmail.com", "Jjp937207G");
+		// envia o e-mail
+		System.out.println("enviando");
+		email.send();
+		System.out.println("enviado.");
+	}
+	
+	
+	public void enviarEmailRecuperacaoSenha(){
+		
+	}
+	
+	
+	public void enviaEmailMensagemParaDono(){
+		
+	}
+	
+	
+	public void enviaEmail() throws EmailException{
+			
+		
+		  SimpleEmail email = new SimpleEmail();
+		   //Utilize o hostname do seu provedor de email
+		   System.out.println("alterando hostname...");
+		   email.setHostName("smtp-mail.outlook.com");
+		   //Quando a porta utilizada não é a padrão (gmail = 465)
+		   email.setSmtpPort(587);
+		   //Adicione os destinatários
+		   email.addTo("jeanjjp2@gmail.com", "Cliente");
+		   //seta o charset
+		   email.setCharset("utf-8");
+		   //Configure o seu email do qual enviará
+		   email.setFrom("magaiver_10@hotmail.com", "Jean");
+		   //Adicione um assunto
+		   email.setSubject("TESTE");
+		   //Adicione a mensagem do email
+		   email.setMsg("Teste de msg enviada pelo java");
+		   //Para autenticar no servidor é necessário chamar os dois métodos abaixo
+		   System.out.println("autenticando...");
+		   email.setTLS(true);
+		   email.setAuthentication("magaiver_10@hotmail.com", "Jjp937207G");
+		   System.out.println("enviando...");
+		   email.send();
+		   System.out.println("Email enviado!");
+		
+		   
+	}
+
+}

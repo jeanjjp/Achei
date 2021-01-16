@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:x="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile">
+
+<ui:composition template="Menu.xhtml">
+
+	<ui:define name="conteudo">
+
+		<div class="container">
+		
+			<div class="row center">
+				
+				<h4 class="light center ">Obrigado por ajudar</h4>
+				<br/>
+				<br/>
+				<div class="col m12 s12">
+					
+					<div class="col m2 s12">
+					<br/>
+						<img class="responsive-img z-depth-4 materialboxed" src="img/foto_perfil.jpg" />
+					</div>
+					
+					<div class="col m10 s12 dados-codigo">
+					
+						<div class="col s12 m6">
+						
+						<!-- DADOS DO USUARIO -->
+						
+							<div class="col s12 m12">
+							<br/>
+								<h5 class=" left">Usuário</h5>	
+								
+							</div>
+					
+							<div class="col s3 m3">
+								<h6 class="light left">Nome:</h6>	
+							</div>
+							<div class="col s9 m9">
+								<h6 class="light left">Jean Jair Pereira</h6>	
+							</div>
+							
+							<div class="col s3 m3">
+								<h6 class="light left">E-mail:</h6>	
+							</div>
+							<div class="col s9 m9">
+								<h6 class="light left">Magaiver_10@hotmail.com</h6>	
+							</div>
+							
+							<div class="col s3 m3">
+								<h6 class="light left">Telefone1:</h6>	
+							</div>
+							<div class="col s9 m9">
+								<h6 class="light left">(48) 9-9990-7666</h6>	
+							</div>
+							
+							<div class="col s3 m3">
+								<h6 class="light left">Telefone2:</h6>	
+							</div>
+							<div class="col s9 m9">
+								<h6 class="light left">(48) 9-9990-7666</h6>	
+							</div>
+							
+							<div class="col s3 m3">
+								<h6 class="light left">Telefone3:</h6>	
+							</div>
+							<div class="col s9 m9">
+								<h6 class="light left">(48) 9-9990-7666</h6>	
+							</div>
+							
+							<div class="col s3 m3">
+								<h6 class="light left">Telefone4:</h6>	
+							</div>
+							<div class="col s9 m9">
+								<h6 class="light left">(48) 9-9990-7666</h6>	
+							</div>
+							
+						
+						</div>
+						
+						
+						<!-- DADOS DO ENDERECO -->
+						<div class="col s12 m6">
+							<div class="col s12 m12">
+							<br/>
+								<h5 class=" left">Endereço</h5>	
+							</div>
+					
+							<div class="col s3 m3">
+								<h6 class="light left">Rua:</h6>	
+							</div>
+							<div class="col s9 m9">
+								<h6 class="light left">Rod. Dr. Antonio Luiz de Moura Gonzaga</h6>	
+							</div>
+							
+							<div class="col s3 m3">
+								<h6 class="light left">nº:</h6>	
+							</div>
+							<div class="col s9 m9">
+								<h6 class="light left">1779</h6>	
+							</div>
+							
+							<div class="col s3 m3">
+								<h6 class="light left">Bairro:</h6>	
+							</div>
+							<div class="col s9 m9">
+								<h6 class="light left">Rio Tavares</h6>	
+							</div>
+							
+							<div class="col s3 m3">
+								<h6 class="light left">Cidade:</h6>	
+							</div>
+							<div class="col s9 m9">
+								<h6 class="light left">Florianópolis</h6>	
+							</div>
+							
+							<div class="col s3 m3">
+								<h6 class="light left">Estado:</h6>	
+							</div>
+							<div class="col s9 m9">
+								<h6 class="light left">SC</h6>	
+							</div>
+							
+							<div class="col s3 m3">
+								<h6 class="light left">CEP:</h6>	
+							</div>
+							<div class="col s9 m9">
+								<h6 class="light left">88040-300</h6>	
+							</div>	
+																			
+						</div>
+						
+						<div class="col s12 m12">
+							<br/>
+							<br/>
+						</div>
+						<hr/>
+						
+						<!-- DADOS DO OBJETO -->
+						<div class="col s12 m6">
+						
+							<div class="col s12 m12">
+							<br/>
+								<h5 class=" left">Objeto</h5>	
+							</div>
+							
+							<div class="col s3 m3">
+								<h6 class="light left">Tipo:</h6>	
+							</div>
+							<div class="col s9 m9">
+								<h6 class="light left">Carteira</h6>	
+							</div>
+							
+							<div class="col s3 m3">
+								<h6 class="light left">Marca:</h6>	
+							</div>
+							<div class="col s9 m9">
+								<h6 class="light left">DudalaCoste</h6>	
+							</div>
+							
+							<div class="col s3 m3">
+								<h6 class="light left">Cor:</h6>	
+							</div>
+							<div class="col s9 m9">
+								<h6 class="light left">Preto</h6>	
+							</div>
+							
+							<div class="col s3 m3">
+								<h6 class="light left">informaçoes adicionais:</h6>	
+							</div>
+							<div class="col s9 m9">
+								<h6 class="light left">tem uma mancha no canto superior ofereço recompensa.</h6>	
+							</div>
+						
+						</div>
+						
+						<!-- FORMULARIO -->
+						<div class="col s12 m6">
+							<div class="col s12 m12">
+							<br/>
+								<h5 class=" left">Mande uma mensagem</h5>	
+							</div>
+						
+							<h:form onkeypress="return event.keyCode != 13">
+							<div class="col s3 m3">
+								<h6 class="light left">Seu nome:</h6>	
+							</div>
+							<div class="col s9 m9">
+								<h:inputText value="" styleClass="right"></h:inputText>
+							</div>
+							
+							<div class="col s3 m3">
+								<h6 class="light left">Assunto</h6>	
+							</div>
+							<div class="col s9 m9">
+								<h:inputText value="" styleClass="right"></h:inputText>
+							</div>
+							
+							<div class="col s3 m3">
+								<h6 class="light left">Mensagem:</h6>	
+							</div>
+							<div class="col s9 m9">
+								<h:inputText value="" styleClass="right"></h:inputText>
+							</div>
+							
+							<div class="col s12 m12">
+								<h:commandButton styleClass="btn red darken-1 center" value="Enviar"></h:commandButton>
+							</div>
+							</h:form>
+							
+							<div class="col s12 m12">
+								<br/>
+							</div>
+							
+						</div>
+						
+					</div>
+					
+					
+				</div>
+					
+			</div>
+		
+		</div>
+	
+	</ui:define>
+
+</ui:composition>
+
+</html>

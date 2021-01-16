@@ -1,0 +1,25 @@
+package test;
+
+import java.net.MalformedURLException;
+
+import org.apache.commons.mail.EmailException;
+
+import util.EnviaEmail;
+
+public class test {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+		
+		EnviaEmail enviaEmail = new EnviaEmail();
+		
+		try {
+			enviaEmail.emailHTML("link");
+		} catch (EmailException | MalformedURLException e) {
+			// TODO Auto-generated catch block
+			System.out.println(e);
+		}
+	}
+
+}

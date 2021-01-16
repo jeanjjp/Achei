@@ -1,0 +1,166 @@
+package controller;
+
+import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.mail.EmailException;
+import org.primefaces.context.RequestContext;
+
+import dao.ClienteDAO;
+
+
+import model.Cliente;
+import util.EnviaEmail;
+
+@ManagedBean
+public class ControladorCliente implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+	
+	private String emailCliente;
+	private String senhaCliente;
+	
+	
+	
+	private float lat; 
+	private float longi; 
+	private String link; 
+	
+	
+	public String cadastrarCliente(){
+		
+		Cliente cliente = new Cliente();
+		cliente.setEmailCliente(this.getEmailCliente());
+		cliente.setSenhaCliente(this.getSenhaCliente());
+		
+		ClienteDAO clienteDAO = new ClienteDAO();
+		
+		if(clienteDAO.comparaEmail(cliente.getEmailCliente())){
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "E-mail já cadastrado.",""));
+		}else{
+			int retorno = clienteDAO.incluirCliente(cliente);
+			
+			if(retorno > 0){
+				
+				FacesContext context = FacesContext.getCurrentInstance();
+				HttpServletRequest request = (HttpServletRequest) 
+						context.getExternalContext().getRequest();
+				
+				HttpSession sessao = request.getSession();
+				
+				sessao.setAttribute("clientelogado", cliente);
+				
+				this.setEmailCliente("");
+				this.setSenhaCliente("");
+				
+				return "security/Perfil.xhtml";
+				
+			}else{
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro.", "Erro ao cadastrar cliente."));
+
+			}
+		}
+			
+		return "index.xhtml";
+	}
+	
+
+	public String editaPerfil(){
+		return "EditaPerfil.xhtml";
+	}
+	
+	public String comprarCodigo(){
+		return "AdquirirCodigo.xhml";
+	}
+	
+	public String notificacao(){
+		return "VerNotificacao.xhtml";
+	}
+	
+	public String EditarCodigo(){
+		return "EditarCodigo.xhtml";
+	}
+	
+	public String voltar(){
+		return "Perfil.xhtml";
+	}
+	
+	public String verCodigos(){
+		return "Codigos.xhtml";
+	}
+	
+	public String localizar(){
+		this.link = "https://www.google.com/maps/place/"+lat+","+longi;
+		EnviaEmail email = new EnviaEmail();
+		
+		
+//		try {
+//			email.emailHTML(link);
+//		} catch (MalformedURLException | EmailException e) {
+//			e.printStackTrace();
+//			System.out.println("Erro ao enviar e-mail "+e);
+//		}
+		return "DadosCodigo.xhtml";
+	}
+
+	
+	
+	
+
+	public String getEmailCliente() {
+		return emailCliente;
+	}
+
+	public void setEmailCliente(String emailCliente) {
+		this.emailCliente = emailCliente;
+	}
+
+	public String getSenhaCliente() {
+		return senhaCliente;
+	}
+
+	public void setSenhaCliente(String senhaCliente) {
+		this.senhaCliente = senhaCliente;
+	}
+
+	public String getLink() {
+		return link;
+	}
+
+	public void setLink(String link) {
+		this.link = link;
+	}
+
+	public float getLat() {
+		return lat;
+	}
+
+	public void setLat(float lat) {
+		this.lat = lat;
+	}
+
+	public float getLongi() {
+		return longi;
+	}
+
+	public void setLongi(float longi) {
+		this.longi = longi;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+	
+	
+	
+	
+}

@@ -1,0 +1,103 @@
+package dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+
+import model.Codigo;
+import model.Objeto;
+import util.ConexaoBanco;
+
+public class CodigoDAO {
+
+	private Connection connection;
+
+	public int incluirCodigo(Codigo codigo) {
+
+		this.connection = new ConexaoBanco().getConnection();
+
+		int idInserido = 0;
+		String sql = "INSERT INTO codigo (codigo, codigo_id_cliente) VALUES (?, ?)";
+
+		try {
+			PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			// seta os valores
+
+			stmt.setString(1, codigo.getCodigo());
+			stmt.setInt(2, codigo.getCodigoIdCliente());
+
+			// executa
+			stmt.executeUpdate();
+
+			ResultSet rs = stmt.getGeneratedKeys();
+
+			if (rs.next()) {
+				idInserido = rs.getInt(1);
+			}
+
+			if (idInserido > 0) {
+				System.out.println("Código inserido com sucesso");
+			} else {
+				System.out.println("Erro ao inserir Código");
+			}
+
+			stmt.close();
+
+			return idInserido;
+
+		} catch (SQLException e) {
+			System.out.println("Erro ao inserir Código " + e);
+			throw new RuntimeException(e);
+		} finally {
+			ConexaoBanco.fecharConexao(this.connection);
+		}
+	}
+	
+	
+	
+
+	public ArrayList<Codigo> listarCodigos(int idCliente) {
+
+		this.connection = new ConexaoBanco().getConnection();
+		
+		Codigo codigo ;
+		Objeto objeto;
+		ArrayList<Codigo> codigos = new ArrayList<Codigo>();
+
+		String sql = "SELECT * FROM codigo as c INNER JOIN objeto as o ON c.id_codigo = o.objeto_id_codigo WHERE c.codigo_id_cliente =" + idCliente;
+
+		try {
+
+			PreparedStatement stmt = connection.prepareStatement(sql);
+			// executa
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				objeto = new Objeto();
+				objeto.setIdObjeto(rs.getInt("id_objeto"));	
+				objeto.setTipoObjeto(rs.getString("tipo_objeto"));
+				objeto.setMensagemObjeto(rs.getString("mensagem_objeto"));
+				objeto.setInformacaoObjeto(rs.getString("informacao_objeto"));;
+				codigo = new Codigo();
+				codigo.setIdCodigo(rs.getInt("id_codigo"));
+				codigo.setCodigoIdCliente(rs.getInt("codigo_id_cliente"));
+				codigo.setCodigo(rs.getString("codigo"));
+				codigo.setObjeto(objeto);
+				
+				codigos.add(codigo);
+
+			}
+			System.out.println("Buscando Array de codigos");
+			stmt.close();
+			return codigos;
+		} catch (SQLException e) {
+			System.out.println("Erro ao buscar codigos no BD! " + e);
+			return codigos;
+		} finally {
+			ConexaoBanco.fecharConexao(this.connection);
+		}
+	}
+
+}

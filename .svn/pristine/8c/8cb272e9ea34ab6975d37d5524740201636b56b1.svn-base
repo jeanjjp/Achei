@@ -1,0 +1,412 @@
+package dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import util.ConexaoBanco;
+import model.Cliente;
+
+
+public class ClienteDAO {
+
+	private Connection connection;
+
+	public int incluirCliente(Cliente cliente) {
+
+		this.connection = new ConexaoBanco().getConnection();
+		
+		int idInserido = 0;
+		String sql = "INSERT INTO cliente (email_cliente, senha_cliente) VALUES (?, ?)";
+		
+		try {
+			PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			// seta os valores
+			
+			stmt.setString(1, cliente.getEmailCliente());
+			stmt.setString(2, cliente.getSenhaCliente());
+		
+			
+			// executa
+			stmt.executeUpdate();
+
+			ResultSet rs = stmt.getGeneratedKeys();
+
+			if (rs.next()) {
+				idInserido = rs.getInt(1);
+			}
+
+			if (idInserido > 0) {
+				System.out.println("Cliente inserida com sucesso");
+			} else {
+				System.out.println("Erro ao inserir Cliente");
+			}
+
+			stmt.close();
+
+			return idInserido;
+			
+		} catch (SQLException e) {
+			System.out.println("Erro ao inserir Cliente " +e);
+			throw new RuntimeException(e);
+		} finally {
+			ConexaoBanco.fecharConexao(this.connection);
+		}
+	}
+
+	public boolean atualizarCliente(Cliente cliente) {
+
+		this.connection = new ConexaoBanco().getConnection();
+		
+		boolean atualizadoSucesso = false;
+		String sql = "UPDATE cliente SET nome_cliente = ?, sobrenome_cliente = ?, data_cliente = ? WHERE id_cliente = ?";
+		
+		java.sql.Date dataClienteSQL = new java.sql.Date(cliente.getDataNascimenteCliente().getTime());
+		
+		try {
+			PreparedStatement stmt = connection.prepareStatement(sql);
+
+			// seta os valores
+
+			stmt.setString(1, cliente.getNomeCliente());
+			stmt.setString(2, cliente.getSobrenomeCliente());
+			stmt.setDate(3, dataClienteSQL);
+			
+			// executa
+			int ok = stmt.executeUpdate();
+
+			if (ok == 1) {
+				System.out.println("Cliente atualizado com sucesso no BD!");
+				atualizadoSucesso = true;
+			} else {
+				System.out.println("Erro ao atualizar liente no BD!");
+			}
+
+			stmt.close();
+
+			return atualizadoSucesso;
+		} catch (SQLException e) {
+			System.out.println("Erro ao atualizar Pessoa no BD! "+e);
+			throw new RuntimeException(e);
+		} finally {
+			ConexaoBanco.fecharConexao(this.connection);
+		}
+	}
+//
+//	public boolean removerAluno(int idAluno) {
+//
+//		boolean removidoSucesso = false;
+//		String sql = "DELETE FROM Aluno WHERE idaluno = ?";
+//
+//		try {
+//			PreparedStatement stmt = connection.prepareStatement(sql);
+//			stmt.setInt(1, idAluno);
+//			int ok = stmt.executeUpdate();
+//
+//			if (ok == 1) {
+//				System.out.println("Pessoa removida com sucesso");
+//				removidoSucesso = true;
+//			} else {
+//				System.out.println("Erro ao remover pessoa");
+//			}
+//
+//			stmt.close();
+//			return removidoSucesso;
+//		} catch (SQLException e) {
+//			System.out.println("Erro ao remover Pessoa no BD!");
+//			throw new RuntimeException(e);
+//		}
+//	}
+//
+	public Cliente obterCliente(int idCliente) {
+		Cliente cliente = null;
+
+		this.connection = new ConexaoBanco().getConnection();
+		
+		String sql = "SELECT * FROM cliente WHERE id_cliente = ?";
+
+		try {
+			PreparedStatement stmt = connection.prepareStatement(sql);
+			stmt.setMaxRows(1);
+			stmt.setInt(1, idCliente);
+			// executa
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				cliente = new Cliente();
+				cliente.setIdCliente(rs.getInt("id_cliente"));
+				cliente.setNomeCliente(rs.getString("nome_cliente"));
+				cliente.setSobrenomeCliente(rs.getString("sobrenome_cliente"));
+				cliente.setEmailCliente(rs.getString("email_cliente"));
+				cliente.setSenhaCliente(rs.getString("senha_cliente"));
+				cliente.setDataNascimenteCliente(rs.getDate("data_cliente"));
+			}
+
+			
+			return cliente;
+
+		} catch (SQLException e) {
+			System.out.println("Erro ao buscar Cliente no BD!");
+			e.printStackTrace();
+			return null;
+			
+		} finally {
+			ConexaoBanco.fecharConexao(this.connection);
+		}
+	}
+//
+//	public ArrayList<Cliente> listarClientes(String dadosDeBusca) {
+//
+//		ArrayList<Cliente> clientes = new ArrayList<Cliente>();
+//		String sql;
+//		if(dadosDeBusca == null){
+//			sql = "SELECT * FROM cliente";
+//		}else{
+//			sql = "SELECT * FROM cliente WHERE nome_cliente LIKE '"+dadosDeBusca +"%' OR email_cliente LIKE '"+dadosDeBusca+"%' order by nome_cliente asc;";
+//		}
+//		try {
+//
+//			PreparedStatement stmt = connection.prepareStatement(sql);
+//			// executa
+//			ResultSet rs = stmt.executeQuery();
+//			while (rs.next()) {
+//				Cliente cliente = new Cliente();
+//				cliente.setIdCliente(rs.getInt("id_cliente"));
+//				cliente.setNomeCliente(rs.getString("nome_cliente"));
+//				cliente.setTelefone1Cliente(rs.getString("telefone1_cliente"));
+//				cliente.setTelefone2Cliente(rs.getString("telefone2_cliente"));
+//				cliente.setEmailCliente(rs.getString("email_cliente"));
+//				cliente.setRuaCliente(rs.getString("rua_cliente"));
+//				cliente.setNumeroCliente(rs.getInt("numero_cliente"));
+//				clientes.add(cliente);
+//				
+//			}
+//			System.out.println("Buscando Array de clientes");
+//			stmt.close();
+//			return clientes;
+//		} catch (SQLException e) {
+//			System.out.println("Erro ao buscar cliente no BD! "+e);
+//			return clientes;
+//		} finally {
+//			Conector.fecharConexao(this.connection);
+//		}
+//	}
+//
+	public boolean comparaEmail(String email) {
+		
+		this.connection = new ConexaoBanco().getConnection();
+
+		String sql = "SELECT * FROM cliente WHERE email_cliente = ?";
+
+		try {
+			PreparedStatement stmt = connection.prepareStatement(sql);
+			stmt.setString(1, email);
+			// executa
+			ResultSet rs = stmt.executeQuery();
+			if (rs.next()) {
+				return true;
+			}
+			stmt.close();
+
+		} catch (SQLException e) {
+			System.out.println("Erro ao comparar email no BD!");
+			e.printStackTrace();
+		} finally {
+			 ConexaoBanco.fecharConexao(this.connection);
+		}
+
+		return false;
+	}
+//
+//	public int incluirAlunoCurso(int idAluno, int IDplanilha, int ano, int semestre) {
+//
+//		int idInserido = 0;
+//		String sql = "INSERT INTO alunoCurso (idAluno, idplanilha) VALUES (?, ?)";
+//
+//		try {
+//			PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+//			// seta os valores
+//			stmt.setInt(1, idAluno);
+//			stmt.setInt(2, IDplanilha);
+//			// executa
+//			stmt.executeUpdate();
+//
+//			ResultSet rs = stmt.getGeneratedKeys();
+//
+//			if (rs.next()) {
+//				idInserido = rs.getInt(1);
+//			}
+//
+//			if (idInserido > 0) {
+//				System.out.println("Aluno inserida em novo curso");
+//			} else {
+//				System.out.println("Erro ao aluno em novo curso");
+//			}
+//
+//			stmt.close();
+//
+//			return idInserido;
+//		} catch (SQLException e) {
+//			System.out.println("Erro ao aluno em novo curso");
+//			throw new RuntimeException(e);
+//		} finally {
+//			ConnectionFactory.fecharConexao(this.connection);
+//		}
+//	}
+//	
+//	
+//	public ArrayList<AlunoDTO> listarAlunoCurso(String nomeAluno, String nomeCurso ) {
+//
+//		ArrayList<AlunoDTO> alunos = new ArrayList<AlunoDTO>();
+//		String sql="";
+//		if(nomeCurso.equals("0")){
+//			sql ="SELECT a.idaluno, a.nome, p.curso FROM aluno as a INNER JOIN alunoCurso as c ON c.idaluno = a.idaluno INNER JOIN planilha as p ON p.id = c.idplanilha WHERE a.nome Like '"+nomeAluno+"%';";
+//		}else{
+//			sql= "SELECT a.idaluno, a.nome, p.curso FROM aluno as a INNER JOIN alunoCurso as c ON c.idaluno = a.idaluno INNER JOIN planilha as p ON p.id = c.idplanilha WHERE a.nome Like '"+nomeAluno+"%' AND  p.curso= '"+nomeCurso+"';";
+//		}
+//		 try {
+//			
+//			PreparedStatement stmt = connection.prepareStatement(sql);
+//
+//			// executa
+//			ResultSet rs = stmt.executeQuery();
+//			while (rs.next()) {
+//				Aluno aluno =  new Aluno();
+//				Planilha planilha = new Planilha();
+//				AlunoDTO alunoDTO = new AlunoDTO();
+//				aluno.setId(rs.getInt("idaluno"));
+//				aluno.setNome(rs.getString("nome"));
+//				planilha.setCurso(rs.getNString("curso"));
+//				alunoDTO.setAluno(aluno);
+//				alunoDTO.setPlanilha(planilha);
+//				
+//				alunos.add(alunoDTO);
+//			}
+//
+//			stmt.close();
+//			return alunos;
+//		} catch (SQLException e) {
+//			System.out.println("Erro ao buscar Pessoas INNER JOIN Planilha no BD!");
+//			return alunos;
+//		} finally {
+//			ConnectionFactory.fecharConexao(this.connection);
+//		}
+//		
+//	}
+//	
+//	
+//	public ArrayList<AlunoDTO> obterAlunoDTO(int idAluno) {
+//		ArrayList<AlunoDTO> alunos = new ArrayList<AlunoDTO>();
+//		ArrayList<XPProfissional> xps = new ArrayList<XPProfissional>();
+//		ArrayList<Planilha> planilhas = new ArrayList<Planilha>();
+//		AlunoDTO alunoDTO = null;
+//		Aluno aluno = null;
+//		Endereco endereco = null;
+//		Planilha planilha = null;
+//		XPProfissionalDAO xpDAO = new XPProfissionalDAO();
+//		PlanilhaDAO pDAO = new PlanilhaDAO();
+//		
+//		
+//		String sql = "SELECT a.*, e.* FROM aluno as a LEFT JOIN endereco as e on a.idaluno = e.idaluno WHERE  a.idaluno = ?";
+//
+//		try {
+//			PreparedStatement stmt = connection.prepareStatement(sql);
+//			stmt.setInt(1, idAluno);
+//			// executa
+//			ResultSet rs = stmt.executeQuery();
+//			while (rs.next()) {
+//				aluno = new Aluno();
+//				alunoDTO = new AlunoDTO();
+//				endereco = new Endereco();
+//				planilha = new Planilha();
+//				aluno.setId(rs.getInt("idaluno"));
+//				aluno.setNome(rs.getString("nome"));
+//				aluno.setCpf(rs.getString("cpf"));
+//				aluno.setEmail(rs.getString("email"));
+//				aluno.setTelefone(rs.getString("telefone"));
+//				aluno.setFormaIngresso(rs.getString("formaingresso"));
+//				aluno.setDtNascimento(rs.getDate("dtnascimento"));
+//				aluno.setMatricula(rs.getString("matricula"));
+//				aluno.setSituacao(rs.getString("situacao"));
+//				//
+//				endereco.setId(rs.getInt("idendereco"));
+//				endereco.setBairro(rs.getString("bairro"));
+//				endereco.setNumero(rs.getInt("numero"));
+//				endereco.setRua(rs.getString("rua"));
+//				//
+//				planilhas =  pDAO.PlanilhaAluno(idAluno);
+//				//
+//				xps = xpDAO.obterXpPrifssional(idAluno);
+//				//
+//				alunoDTO.setAluno(aluno);
+//				alunoDTO.setPlanilhas(planilhas);
+//				alunoDTO.setEndereco(endereco);
+//				alunoDTO.setXpProfissional(xps);
+//				
+//				alunos.add(alunoDTO);
+//			}
+//
+//			
+//			return alunos;
+//
+//		} catch (SQLException e) {
+//			System.out.println("Erro ao buscar aluno no BD!");
+//			e.printStackTrace();
+//			return null;
+//		} finally {
+//			
+//		}
+//	}
+
+	
+	
+public Cliente verificaLogin(String email, String senha) {
+		
+	this.connection = new ConexaoBanco().getConnection();
+			
+		Cliente cliente = null;
+		String sql = "SELECT * FROM cliente WHERE email_cliente = ?";
+
+		try {
+			PreparedStatement stmt = connection.prepareStatement(sql);
+			stmt.setString(1, email);
+			// executa
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				cliente = new Cliente();
+				cliente.setIdCliente(rs.getInt("id_cliente"));
+				cliente.setNomeCliente(rs.getString("nome_cliente"));
+				cliente.setSobrenomeCliente(rs.getString("sobrenome_cliente"));
+				cliente.setEmailCliente(rs.getString("email_cliente"));
+				cliente.setDataNascimenteCliente(rs.getDate("data_cliente"));
+				cliente.setSenhaCliente(rs.getString("senha_cliente"));
+			}
+			stmt.close();
+			
+			
+			if(cliente != null){
+				if(cliente.getSenhaCliente().equals(senha)){
+					
+					return cliente;
+				}else{
+					return null;
+				}
+			}
+			
+
+		} catch (SQLException e) {
+			System.out.println("Erro ao verificar Login no BD!");
+			e.printStackTrace();
+		} finally {
+			ConexaoBanco.fecharConexao(this.connection);
+		}
+
+		return cliente;
+	}
+	
+	
+	
+	
+	
+}

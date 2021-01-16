@@ -1,0 +1,201 @@
+package controller;
+
+import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+
+import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.mail.EmailException;
+import org.primefaces.context.RequestContext;
+
+import dao.ClienteDAO;
+import dao.ContatoDAO;
+import dao.EnderecoDAO;
+import model.Cliente;
+import model.Contato;
+import model.Endereco;
+import util.EnviaEmail;
+
+@ManagedBean
+public class ControladorCliente implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+	
+	private Cliente cliente = new Cliente();
+	private Endereco endereco = new Endereco();
+	private Contato contato = new Contato();
+	
+	
+	public String cadastrarCliente(){
+		
+		ClienteDAO clienteDAO = new ClienteDAO();
+		
+		if(clienteDAO.comparaEmail(this.cliente.getEmailCliente())){
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "E-mail já cadastrado.",""));
+		}else{
+			int retorno = clienteDAO.incluirCliente(this.cliente);
+			
+			if(retorno > 0){
+				
+				//destroi a sessao anterior caso tenha alguem logado.
+				FacesContext context = FacesContext.getCurrentInstance();
+				HttpServletRequest request = (HttpServletRequest) 
+						context.getExternalContext().getRequest();
+				
+				HttpSession sessao = request.getSession();
+				
+				sessao.invalidate();
+				
+				//Cria uma nova sessao com o novo cliente.
+				this.cliente.setIdCliente(retorno);
+				
+				sessao = request.getSession();
+				sessao.setAttribute("clientelogado", this.cliente);
+				
+				//ligo o id do cliente com a tabaela endereco
+				EnderecoDAO edao = new EnderecoDAO();
+				this.endereco.setIdCliente(retorno);
+				edao.incluirOuAlterarEndereco(endereco);
+				
+				//ligo o id cliente com a tabela contato
+				ContatoDAO cdao = new ContatoDAO();
+				this.contato.setContato_id_cliente(retorno);
+				cdao.incluirOuAlterarContato(contato);
+			
+				clienteDAO = null;
+				
+				return "security/EditaPerfil.xhtml";
+				
+			}else{
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro ao cadastrar cliente.", ""));
+
+			}
+		}
+			
+		return "index.xhtml";
+	}
+	
+	public String editaPerfil(){
+		
+		this.cliente = pegaClienteNaSessao();
+		ClienteDAO clienteDAO = new ClienteDAO();
+		this.cliente = clienteDAO.obterCliente(this.cliente.getIdCliente());
+		this.endereco = this.cliente.getEndereco();
+		this.contato = this.cliente.getContato();
+		
+		return "EditaPerfil.xhtml";
+	}
+	
+	
+	public void alteraCliente(){
+	
+		ClienteDAO cDAO = new ClienteDAO();
+		if(cDAO.atualizarCliente(this.cliente)){
+			
+			FacesContext context = FacesContext.getCurrentInstance();
+			HttpServletRequest request = (HttpServletRequest) 
+					context.getExternalContext().getRequest();
+			
+			HttpSession sessao = request.getSession();
+			sessao.removeAttribute("clientelogado");
+			sessao.setAttribute("clientelogado", this.cliente);
+			
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Dados atualizados.", ""));	
+		}else{
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro ao atualizar dados.", ""));
+		}
+		
+		editaPerfil();
+	}
+
+	
+	public void alterarEndereco(){
+		
+		EnderecoDAO enderecoDAO = new EnderecoDAO();
+		if(enderecoDAO.incluirOuAlterarEndereco(this.endereco) > 0){
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Dados atualizados.", ""));
+		}else{
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Erro ao atualizar dados.", ""));
+		}
+		
+		editaPerfil();
+	}
+	
+	public void alterarContato(){
+		
+		ContatoDAO contatoDAO = new ContatoDAO();
+		if(contatoDAO.incluirOuAlterarContato(this.contato) > 0){
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Dados atualizados.", ""));
+		}else{
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Erro ao atualizar dados.", ""));
+		}
+
+		editaPerfil();
+	}
+	
+	public Cliente pegaClienteNaSessao(){
+		FacesContext context = FacesContext.getCurrentInstance();
+		HttpServletRequest request = (HttpServletRequest) 
+				context.getExternalContext().getRequest();
+		
+		HttpSession sessao = request.getSession();
+		Cliente cliente = (Cliente) sessao.getAttribute("clientelogado");
+		
+		return cliente;
+	}
+	
+	
+	public String notificacao(){
+		return "VerNotificacao.xhtml";
+	}
+	
+	public String voltar(){
+		return "Perfil.xhtml";
+	}
+
+	
+	
+	//-----Gets e Sets--------
+	
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public Cliente getCliente() {
+		return cliente;
+
+	}
+
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
+	}
+
+	public Endereco getEndereco() {
+		return endereco;
+	}
+
+	public void setEndereco(Endereco endereco) {
+		this.endereco = endereco;
+	}
+
+	public Contato getContato() {
+		return contato;
+	}
+
+	public void setContato(Contato contato) {
+		this.contato = contato;
+	}
+	
+}
